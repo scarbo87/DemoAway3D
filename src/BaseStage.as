@@ -7,8 +7,10 @@ package
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Vector3D;
+	import flash.ui.Keyboard;
 	
 	/**
 	 * ...
@@ -23,6 +25,10 @@ package
 		protected var _move:Boolean = false;
 		protected var _lastMouseX:Number;
 		protected var _lastMouseY:Number;
+		protected var _keyUp:Boolean;
+		protected var _keyDown:Boolean;
+		protected var _keyLeft:Boolean;
+		protected var _keyRight:Boolean;
 		protected var _lastPanAngle:Number;
 		protected var _lastTiltAnge:Number;
 		
@@ -47,6 +53,8 @@ package
 			stage.addEventListener(MouseEvent.MOUSE_UP, _onMouseUp);
 			stage.addEventListener(Event.MOUSE_LEAVE, _onMouseUp);
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, _onMouseWheel);
+			stage.addEventListener(KeyboardEvent.KEY_UP, _onKeyUp);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, _onKeyDown);
 			stage.addEventListener(Event.RESIZE, _onResize);
 			onResize();
 		}
@@ -67,10 +75,25 @@ package
 			if (_demoRotation) {
 				HoverController(_cameraController).panAngle -= 0.2;
 			}
+			
 			if (_move) {
 				HoverController(_cameraController).panAngle = 0.3 * (stage.mouseX - _lastMouseX) + _lastPanAngle;
 				HoverController(_cameraController).tiltAngle = 0.3 * (stage.mouseY - _lastMouseY) + _lastTiltAnge;
 			}
+			
+			if (_keyUp) {
+				_lookAtPosition.x -= 10;
+			}
+			if (_keyDown) {
+				_lookAtPosition.x += 10;
+			}
+			if (_keyLeft) {
+				_lookAtPosition.z -= 10;
+			}
+			if (_keyRight) {
+				_lookAtPosition.z += 10;
+			}
+			
 			HoverController(_cameraController).lookAtPosition = _lookAtPosition;
 			_view.render();
 			//
@@ -108,6 +131,60 @@ package
 			onMouseWheel(event);
 		}
 		
+		protected function _onKeyDown(event:KeyboardEvent):void
+		{
+			switch(event.keyCode) {
+				case Keyboard.UP:
+				case Keyboard.W:
+					_keyUp = true;
+					break;
+					
+				case Keyboard.DOWN:
+				case Keyboard.S:
+					_keyDown = true;
+					break;
+					
+				case Keyboard.LEFT:
+				case Keyboard.A:
+					_keyLeft = true;
+					break;
+					
+				case Keyboard.RIGHT:
+				case Keyboard.D:
+					_keyRight = true;
+					break;
+			}
+			//
+			onKeyDown(event);
+		}
+		
+		protected function _onKeyUp(event:KeyboardEvent):void
+		{
+			switch(event.keyCode) {
+				case Keyboard.UP:
+				case Keyboard.W:
+					_keyUp = false;
+					break;
+					
+				case Keyboard.DOWN:
+				case Keyboard.S:
+					_keyDown = false;
+					break;
+					
+				case Keyboard.LEFT:
+				case Keyboard.A:
+					_keyLeft = false;
+					break;
+					
+				case Keyboard.RIGHT:
+				case Keyboard.D:
+					_keyRight = false;
+					break;
+			}
+			//
+			onKeyUp(event);
+		}
+		
 		protected function _onResize(event:Event = null):void 
 		{
 			_view.width = stage.stageWidth;
@@ -140,6 +217,16 @@ package
 		}
 		
 		protected function onMouseWheel(event:MouseEvent = null):void
+		{
+			//override this
+		}
+		
+		protected function onKeyUp(event:KeyboardEvent = null):void
+		{
+			//override this
+		}
+		
+		protected function onKeyDown(event:KeyboardEvent = null):void
 		{
 			//override this
 		}
