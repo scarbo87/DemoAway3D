@@ -55,15 +55,14 @@ package
 			super();
 		}
 		
-		override protected function _initCamera():void
+		override protected function initCamera():void
 		{
 			_cameraController = new HoverController(_view.camera, null, 180, 10, 300, 5);
 		}
 		
-		override protected function init(event:Event = null):void
+		override protected function initPrimitives():void
 		{
-			_demoRotation = false;
-			_view.antiAlias = 16;
+			demoRotation = false;
 			
 			var light:DirectionalLight = new DirectionalLight(0, 10, 80);
 			light.ambientColor = 16777215;

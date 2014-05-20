@@ -36,14 +36,14 @@ package
 			super();
 		}
 		
-		override protected function _initCamera():void
+		override protected function initCamera():void
 		{
 			_cameraController = new HoverController(_view.camera, null, 50, 20, 200, 5);
 		}
 		
-		override protected function init(event:Event = null):void
+		override protected function initPrimitives():void
 		{
-			_demoRotation = false;
+			demoRotation = false;
 			
 			_board = new Mesh(new PlaneGeometry(500, 500), new ColorMaterial(0xc8c8c8));
 			_view.scene.addChild(_board);

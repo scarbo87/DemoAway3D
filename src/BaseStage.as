@@ -19,10 +19,12 @@ package
 	[SWF(backgroundColor="#000000", frameRate="60", width="800", height="600")]
 	public class BaseStage extends Sprite 
 	{
+		protected var antiAlias:uint = 4;
+		protected var demoRotation:Boolean = true;
+		
 		protected var _view:View3D;
-		protected var _cameraController:ControllerBase;
+		protected var _cameraController:HoverController;
 		protected var _lookAtPosition:Vector3D = new Vector3D();
-		protected var _demoRotation:Boolean = true;
 		protected var _move:Boolean = false;
 		protected var _lastMouseX:Number;
 		protected var _lastMouseY:Number;
@@ -45,9 +47,9 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			
-			_initView();
-			_initCamera();
-			init(event);
+			initView();
+			initCamera();
+			initPrimitives();
 			
 			addEventListener(Event.ENTER_FRAME, _onEnterFrame);
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, _onMouseDown);
@@ -60,51 +62,48 @@ package
 			onResize();
 		}
 		
-		protected function _initView():void
+		protected function initView():void
 		{
 			_view = new View3D();
+			_view.antiAlias = antiAlias;
 			addChild(_view);
 		}
 		
-		protected function _initCamera():void
+		protected function initCamera():void
 		{
 			_cameraController = new HoverController(_view.camera, null, 20, 45, 500, 5);
 		}
 		
+		protected function initPrimitives():void
+		{
+			//override this
+		}
+		
 		protected function _onEnterFrame(event:Event):void 
 		{
-			if (_demoRotation) {
-				HoverController(_cameraController).panAngle -= 0.2;
+			if (_cameraController) {
+				if (_move) {
+					_cameraController.panAngle = 0.3 * (stage.mouseX - _lastMouseX) + _lastPanAngle;
+					_cameraController.tiltAngle = 0.3 * (stage.mouseY - _lastMouseY) + _lastTiltAnge;
+				}
+			
+				if (demoRotation) _cameraController.panAngle -= 0.2;
+				if (_keyUp) _lookAtPosition.x -= 10;
+				if (_keyDown) _lookAtPosition.x += 10;
+				if (_keyLeft) _lookAtPosition.z -= 10;
+				if (_keyRight)_lookAtPosition.z += 10;
+			
+				_cameraController.lookAtPosition = _lookAtPosition;
 			}
 			
-			if (_move) {
-				HoverController(_cameraController).panAngle = 0.3 * (stage.mouseX - _lastMouseX) + _lastPanAngle;
-				HoverController(_cameraController).tiltAngle = 0.3 * (stage.mouseY - _lastMouseY) + _lastTiltAnge;
-			}
-			
-			if (_keyUp) {
-				_lookAtPosition.x -= 10;
-			}
-			if (_keyDown) {
-				_lookAtPosition.x += 10;
-			}
-			if (_keyLeft) {
-				_lookAtPosition.z -= 10;
-			}
-			if (_keyRight) {
-				_lookAtPosition.z += 10;
-			}
-			
-			HoverController(_cameraController).lookAtPosition = _lookAtPosition;
 			_view.render();
-			//
 			onEnterFrame(event);
 		}
 		
 		protected function _onMouseDown(event:MouseEvent):void
 		{
-			_lastPanAngle = HoverController(_cameraController).panAngle;
-			_lastTiltAnge = HoverController(_cameraController).tiltAngle;
+			_lastPanAngle = _cameraController.panAngle;
+			_lastTiltAnge = _cameraController.tiltAngle;
 			_lastMouseX = stage.mouseX;
 			_lastMouseY = stage.mouseY;
 			_move = true;
@@ -121,12 +120,12 @@ package
 		
 		protected function _onMouseWheel(event:MouseEvent):void
 		{
-			HoverController(_cameraController).distance -= event.delta * 5;
-			if (HoverController(_cameraController).distance < 100) {
-				HoverController(_cameraController).distance = 100;
+			_cameraController.distance -= event.delta * 5;
+			if (_cameraController.distance < 100) {
+				_cameraController.distance = 100;
 			}
-			else if (HoverController(_cameraController).distance > 2000) {
-				HoverController(_cameraController).distance = 2000;
+			else if (_cameraController.distance > 2000) {
+				_cameraController.distance = 2000;
 			}
 			//
 			onMouseWheel(event);

@@ -40,7 +40,7 @@
     </library-path>
   </compiler>
   <file-specs>
-    <path-element>C:\Users\Антон\Desktop\DemoAway3D\src\DemoMaterial.as</path-element>
+    <path-element>C:\Users\Антон\Desktop\DemoAway3D\src\DemoSquare.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
   <default-frame-rate>60</default-frame-rate>

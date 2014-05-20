@@ -23,9 +23,9 @@ package
 			super();
 		}
 		
-		override protected function init(event:Event = null):void
+		override protected function initPrimitives():void
 		{
-			//_demoRotation = false;
+			//demoRotation = false;
 			_model = new Mesh(new PlaneGeometry(700, 700), new TextureMaterial(Cast.bitmapTexture(FLOOR_DIFFUSE)));
 			_view.scene.addChild(_model);
 		}
