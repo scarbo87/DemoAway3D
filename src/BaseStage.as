@@ -16,6 +16,7 @@ package
 	 * ...
 	 * @author Scarbo
 	 */
+	[SWF(backgroundColor="#000000", frameRate="60", width="800", height="600")]
 	public class BaseStage extends Sprite 
 	{
 		protected var _view:View3D;
